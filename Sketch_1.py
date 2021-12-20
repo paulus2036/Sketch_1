@@ -1,9 +1,6 @@
 import streamlit as st
 import pandas as pd
 
-objects = pd.read_csv('data/dataset003/objects-003.csv')
-relations = pd.read_csv('data/dataset003/relations-003.csv')
-
 selection = []
 
 def selector(start, df_rel, cond, dfr, dfo_ind):
