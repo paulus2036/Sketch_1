@@ -80,82 +80,74 @@ dropdowns = st.container()
 # dataset = st.beta_container()
 
 
-
-menu = ['Sketch 1', 'Sketch 2']
-choice = st.sidebar.radio("Menu", menu)
-
-if choice == "Sketch 1":
-  with header:
-    st.title('Sketch 1')
+with header:
+  st.title('Sketch 1')
+  
+with uploads:
+  
+  l_col, r_col = st.columns(2)
     
-  with uploads:
-    
-    l_col, r_col = st.columns(2)
-      
-    objects_u = l_col.file_uploader('Upload Objects', 
+  objects_u = l_col.file_uploader('Upload Objects', 
+                                  accept_multiple_files = False, 
+                                  type = 'CSV')
+  if objects_u is not None:
+    df_obj = pd.read_csv(objects_u)
+    df_obj = df_obj.fillna("-")
+
+  relations_u = r_col.file_uploader('Upload Relations', 
                                     accept_multiple_files = False, 
                                     type = 'CSV')
-    if objects_u is not None:
-      df_obj = pd.read_csv(objects_u)
-      df_obj = df_obj.fillna("-")
-
-    relations_u = r_col.file_uploader('Upload Relations', 
-                                      accept_multiple_files = False, 
-                                      type = 'CSV')
-    if relations_u is not None:
-      df_rel = pd.read_csv(relations_u)
-      df_rel = df_rel.fillna("-")
-      
-  with dropdowns:
-    results = []
-    l_col, m_col, r_col = st.columns(3)
+  if relations_u is not None:
+    df_rel = pd.read_csv(relations_u)
+    df_rel = df_rel.fillna("-")
     
-    if objects_u is not None:
-      if 'Object ID' not in df_obj.columns:
-        l_col.write('No object ID column found')
-      else:
-        start_obj = l_col.selectbox('Start object', 
-                        options = df_obj['Object ID'])
+with dropdowns:
+  results = []
+  l_col, m_col, r_col = st.columns(3)
+  
+  if objects_u is not None:
+    if 'Object ID' not in df_obj.columns:
+      l_col.write('No object ID column found')
     else:
       start_obj = l_col.selectbox('Start object', 
-                      options = ['No objects found'])
-      
-    if relations_u is not None:
-      conditions = m_col.multiselect('Conditions', 
-                                    options = list(filter(lambda a: a != '-', df_rel['Condition'].unique())))
+                      options = df_obj['Object ID'])
+  else:
+    start_obj = l_col.selectbox('Start object', 
+                    options = ['No objects found'])
+    
+  if relations_u is not None:
+    conditions = m_col.multiselect('Conditions', 
+                                  options = list(filter(lambda a: a != '-', df_rel['Condition'].unique())))
+  else:
+    conditions = m_col.multiselect('Conditions', 
+                                  options = ['No conditions found'],
+                                  default = ['No conditions found'])
+    
+  if relations_u is not None:
+    rel_types = r_col.multiselect('Relation types', 
+                                  options = df_rel['Relation type'].unique(),
+                                  default = df_rel['Relation type'].unique()[0])
+  else:
+    rel_types = r_col.multiselect('Relation types', 
+                                  options = ['No relations found'], 
+                                  default = ['No relations found'])
+    
+    
+  if objects_u is not None and relations_u is not None:
+    if conditions is None:
+      cds = ['-']
     else:
-      conditions = m_col.multiselect('Conditions', 
-                                    options = ['No conditions found'],
-                                    default = ['No conditions found'])
+      cds = conditions.append('-')
       
-    if relations_u is not None:
-      rel_types = r_col.multiselect('Relation types', 
-                                    options = df_rel['Relation type'].unique(),
-                                    default = df_rel['Relation type'].unique()[0])
-    else:
-      rel_types = r_col.multiselect('Relation types', 
-                                    options = ['No relations found'], 
-                                    default = ['No relations found'])
-      
-      
-    if objects_u is not None and relations_u is not None:
-      if conditions is None:
-        cds = ['-']
-      else:
-        cds = conditions.append('-')
-        
-      selection = []
-      selector(start_obj, rel_types, conditions, df_rel, df_obj)
-      results = selection
-      
-      st.subheader('Output table')
-      df_results = pd.DataFrame(set(selection), columns=['Selected items'])
-      df_results.index += 1
-      st.table(df_results)
+    selection = []
+    selector(start_obj, rel_types, conditions, df_rel, df_obj)
+    results = selection
+    
+    st.subheader('Output table')
+    df_results = pd.DataFrame(set(selection), columns=['Selected items'])
+    df_results.index += 1
+    st.table(df_results)
 
-if choice == "Sketch 2":
-  with header:
-    st.title('Sketch 2')
 
 
 
