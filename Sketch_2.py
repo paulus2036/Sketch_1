@@ -72,6 +72,7 @@ def recur_4x (d, oid, dfr):
 
 
 header = st.container()
+descriptive = st.container()
 uploads = st.container()
 dropdowns = st.container()
 error = st.container()
@@ -85,7 +86,43 @@ output = st.container()
 
 with header:
     st.title('Sketch 2')
-
+    
+with descriptive:
+    st.markdown(
+        """
+        ---
+        #### Gist:
+         - Show that, given a product structure, \
+             valid configurations can be generated \
+                 using the relations between the objects \
+                     and a rule set (including Exclusive Or relations)
+         - Indicate ambiguous conditions \n
+         
+         #### Functionality:
+         1. Begin at the **START** node/object, as indicated by \
+             the user (dropdown of all objects in the *OBJECTS.csv*)
+         2. If applicable, follow the objects that
+            - are related to the **START** object by the **SELECTED** \
+                relations (dropdown of all relations found in the *RELATIONS.csv* file) AND
+            - have a default relation with the **START** object \
+                (= no conditions), or that have the **CONDITIONS** \
+                    as selected (dropdown of all conditions in the *RELATIONS.csv* file)
+         3. Identify conflicts when two or more conditions are \
+             selected allocated to the same XOR port of an object. \
+                 See image: conditions C2 and C3 cannot be selected \
+                     simultaneously. Give error message when this \
+                         occurs and explain what the error situation is.
+         4. Implement rule: the default relation is overruled when \
+             a condition is selected for the same object on the same \
+                 XOR port. (in the image: when condition C2 is selected, \
+                     the "Combustion Engine B" will be the selected item,\
+                         instead of "Combustion Engine A" which is the default. )
+         5. Repeat this process (1 - 4) for all selected objects related to the **START** object. \n
+         ---
+         
+        """
+    )
+    
 with uploads:
 
     l_col, r_col = st.columns(2)
