@@ -74,6 +74,7 @@ def recur_4x (d, oid, dfr):
 
 
 header = st.container()
+descriptive = st.container()
 uploads = st.container()
 dropdowns = st.container()
 
@@ -82,6 +83,21 @@ dropdowns = st.container()
 
 with header:
   st.title('Sketch 1')
+  
+with descriptive:
+  st.markdown(
+    """
+    ---
+    #### Functionality:
+    - Upload objects csv file
+    - Upload relations csv file
+    - Select start object (from objects in the *objects.csv* file) – dropdown list
+    - Select Conditions as derived from the *relations.csv* file – multiple options
+    - Select Relations as derived from the *relations.csv* file – multiple options
+    - Show list of “end nodes”, based on the selected start object, conditions and relations \n
+    ---
+    """
+  )
   
 with uploads:
   
